@@ -227,10 +227,10 @@ COPY requirements.txt requirements.txt
 COPY granulate-utils/setup.py granulate-utils/requirements.txt granulate-utils/README.md granulate-utils/
 COPY granulate-utils/granulate_utils granulate-utils/granulate_utils
 COPY granulate-utils/glogger granulate-utils/glogger
-RUN python3 -m pip install --no-cache-dir -r requirements.txt
+RUN python3 -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --no-cache-dir -r requirements.txt
 
 COPY exe-requirements.txt exe-requirements.txt
-RUN python3 -m pip install --no-cache-dir -r exe-requirements.txt
+RUN python3 -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --no-cache-dir -r exe-requirements.txt
 
 # copy PyPerf, licenses and notice file.
 RUN mkdir -p gprofiler/resources/ruby && \
@@ -274,7 +274,8 @@ COPY gprofiler gprofiler
 # this check in the shell.
 COPY pyi_build.py pyinstaller.spec scripts/check_pyinstaller.sh ./
 
-RUN pyinstaller pyinstaller.spec \
+# Harshad added log level
+RUN pyinstaller --log-level=DEBUG pyinstaller.spec \
     && echo \
     && test -f build/pyinstaller/warn-pyinstaller.txt \
     && ./check_pyinstaller.sh
